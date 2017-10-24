@@ -11,7 +11,7 @@ with open('credentials.json') as js:
     
 conversation = ConversationV1(username=str(credentials['username']), password=str(credentials['password']), version='2017-04-21')
 
-workspace_id = 'a88c89a4-6f1f-4e52-9b00-711e5b6fec9a'
+workspace_id = '8576b6f8-005a-4eae-9859-52c798ab7214'
 
 article = {}
 watson_response = {}
