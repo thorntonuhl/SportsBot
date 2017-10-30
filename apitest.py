@@ -10,16 +10,13 @@ aylien_news_api.configuration.api_key['X-AYLIEN-NewsAPI-Application-Key'] = 'db5
 api_instance = aylien_news_api.DefaultApi()
 
 opts = {
-  'title': 'trump',
-  'sort_by': 'social_shares_count.facebook',
+  'title': 'new england patriots',
+  #'sort_by': 'social_shares_count.facebook',
+  'sort_by':'relevance',
   'language': ['en'],
-  'not_language': ['es', 'it'],
-  'published_at_start': 'NOW-7DAYS',
+  'published_at_start': 'NOW-1DAYS',
   'published_at_end': 'NOW',
-  'entities_body_links_dbpedia': [
-    'http://dbpedia.org/resource/Donald_Trump',
-    'http://dbpedia.org/resource/Hillary_Rodham_Clinton'
-  ]
+  'per_page': 1
 }
 
 try:
