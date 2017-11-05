@@ -3,7 +3,7 @@ from aylien_news_api.rest import ApiException
 import re
 import pdb
 
-def ay_lookup(keyword, subject = ''):
+def ay_lookup(keyword, subject = '',entities = []):
     # Configure API key authorization: app_id
     aylien_news_api.configuration.api_key['X-AYLIEN-NewsAPI-Application-ID'] = 'e6ddf398'
     # Configure API key authorization: app_key
@@ -18,7 +18,8 @@ def ay_lookup(keyword, subject = ''):
       'sort_by': 'relevance',
       'language': ['en'],
       'published_at_start': 'NOW-2DAYS',
-      'published_at_end': 'NOW'
+      'published_at_end': 'NOW',
+      'entities_body_text' : entities
     }
     if subject != '':
         opts['text'] = subject
@@ -73,9 +74,12 @@ def bad_string(st):
     try:
         if (re.match("( ...\.)", st[len(st)-5:]) != None or
             re.match("(^*.\.)", st[len(st)-10:]) != None or
-            re.match("( ..\.)", st[len(st)-5:]) != None):
+            re.match("( .\.)", st[len(st)-3:]) != None or
+            re.match("( ..\.)", st[len(st)-4:]) != None):
             return True
         elif len(st) < 10:
+            return True
+        elif "vs." in st[len(st)-4:]:
             return True
         else:
             return False

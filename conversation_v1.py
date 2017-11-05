@@ -13,7 +13,7 @@ with open('credentials.json') as js:
     
 conversation = ConversationV1(username=str(credentials['username']), password=str(credentials['password']), version='2017-04-21')
 
-workspace_id = '8576b6f8-005a-4eae-9859-52c798ab7214'
+workspace_id = '20fc1cdf-6711-497e-a82a-0ffac4b0284a'
 
 story = {"body" : ''}
 watson_response = {}
@@ -22,29 +22,54 @@ typed = ''
 response_message = ''
 initial_message = "Hi, I'm Billy, The Cheeky Chatbot! I'll look things up for you!\n\n\n"
 
+print '\n\n'
+
 def conv_att():
     typed = ''
     response_message = ''
-    while typed != 'QUIT':              
-        if response_message != '':
-            typed = raw_input(response_message)
-        else:
+    while typed.lower() != 'quit':
+        if response_message == '':
             typed = raw_input(initial_message)
+        else:
+            typed = raw_input(response_message)
+            
         print "\n"
-        if typed.lower() == "more":
-            print story.body + '\n\n'
-            typed = raw_input()
+        
+        if "more" in typed.lower():
+            response_message = story.body
+        elif "source" in typed.lower():
+            try:
+                response_message = story.source.name
+            except:
+                response_message = "Source Unavailable."
+        elif "author" in typed.lower():
+            try:
+                response_message = story.author.name
+            except:
+                response_message = "Author Unavailable."
+        elif "description" in typed.lower():
+            try:
+                response_message = res
+            except:
+                response_message = "Description Unavailable."
         else:
             watson_response = conversation.message(workspace_id=workspace_id, message_input={'text': typed})
             response_message = ''#watson_response['output']['text'][0]
             #print watson_response
+            entities = []
             try:
                 lookup_str = watson_response["entities"][0]["value"]
-                subject = watson_response["intents"][0]["value"]
+                for i in range(0,len(watson_response['entities'])):
+                    entities.append(watson_response["entities"][i]["value"])
+                try:
+                    subject = watson_response["intents"][0]["value"]
+                except:
+                    subject = ''
             except:
                 lookup_str = typed
                 subject = ''
-            story, res = ay_lookup(lookup_str, subject)
-            response_message += res + "\n\n\n"
+            story, res = ay_lookup(lookup_str, subject,entities)
+            response_message += res
+        response_message += "\n\n\n"
 
 conv_att()
