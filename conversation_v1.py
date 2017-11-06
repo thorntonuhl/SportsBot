@@ -1,12 +1,9 @@
 import json
 from watson_developer_cloud import ConversationV1
-#from news_api import *
 from ay_news_api import *
-import pdb
 
-#########################
-# message
-#########################
+from flask import Flask,render_template,request
+app = Flask(__name__)
 
 with open('credentials.json') as js:
     credentials = json.load(js)
@@ -18,44 +15,50 @@ workspace_id = '4821b731-49db-4497-9376-5fc787771924'
 story = {"body" : ''}
 watson_response = {}
 
-typed = ''
-response_message = ''
-initial_message = "Hi, I'm Billy, The Cheeky Chatbot! I'll look things up for you!\n\n\n"
 
-print '\n\n'
+@app.route('/')
+def input_display():
+    input_text = request.args.get('input')
 
-def conv_att():
-    typed = ''
-    response_message = ''
-    while typed.lower() != 'quit':
-        if response_message == '':
-            typed = raw_input(initial_message)
+    if input_text == None or input_text == '':
+        return render_template('sports_bot.html', name='I\'m the sports bot. How can I help?')
+    
+    else:
+        output = conv_att(input_text)
+        return render_template('sports_bot.html', name=output)
+
+res = ''
+subject = ''
+
+def conv_att(input_text):
+        if "subject" in input_text.lower():
+            try:
+                return subject
+            except:
+                return "Subject Unavailable."
+        elif "more" in input_text.lower():
+            try:
+                return story.body
+            except:
+                return "Story Unavailable."
+        elif "source" in input_text.lower():
+            try:
+                return story.source.name
+            except:
+                return "Source Unavailable."
+        elif "author" in input_text.lower():
+            try:
+                return story.author.name
+            except:
+                return "Author Unavailable."
+        elif "description" in input_text.lower():
+            if res != '':
+                return res
+            else:
+                return "Description Unavailable."
         else:
-            typed = raw_input(response_message)
-            
-        print "\n"
-        
-        if "more" in typed.lower():
-            response_message = story.body
-        elif "source" in typed.lower():
-            try:
-                response_message = story.source.name
-            except:
-                response_message = "Source Unavailable."
-        elif "author" in typed.lower():
-            try:
-                response_message = story.author.name
-            except:
-                response_message = "Author Unavailable."
-        elif "description" in typed.lower():
-            try:
-                response_message = res
-            except:
-                response_message = "Description Unavailable."
-        else:
-            watson_response = conversation.message(workspace_id=workspace_id, message_input={'text': typed})
-            response_message = ''#watson_response['output']['text'][0]
-            #print watson_response
+            watson_response = conversation.message(workspace_id=workspace_id, message_input={'text': input_text})
+            response_message = ''
             entities = []
             try:
                 lookup_str = watson_response["entities"][0]["value"]
@@ -66,10 +69,15 @@ def conv_att():
                 except:
                     subject = ''
             except:
-                lookup_str = typed
+                lookup_str = input_text
                 subject = ''
-            story, res = ay_lookup(lookup_str, subject, entities)
-            response_message += res
-        response_message += "\n\n\n"
-
-conv_att()
+            response = None
+            counter = 2
+            while response == None:
+                response = ay_lookup(lookup_str, subject, entities, '0,'+str(counter))
+                counter += 2
+            story = response[0]
+            res = response[1]
+        return res
+        
+app.run()
