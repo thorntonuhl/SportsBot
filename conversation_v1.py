@@ -13,7 +13,7 @@ with open('credentials.json') as js:
     
 conversation = ConversationV1(username=str(credentials['username']), password=str(credentials['password']), version='2017-04-21')
 
-workspace_id = '20fc1cdf-6711-497e-a82a-0ffac4b0284a'
+workspace_id = '4821b731-49db-4497-9376-5fc787771924'
 
 story = {"body" : ''}
 watson_response = {}
@@ -68,7 +68,7 @@ def conv_att():
             except:
                 lookup_str = typed
                 subject = ''
-            story, res = ay_lookup(lookup_str, subject,entities)
+            story, res = ay_lookup(lookup_str, subject, entities)
             response_message += res
         response_message += "\n\n\n"
 
