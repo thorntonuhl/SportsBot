@@ -1,0 +1,28 @@
+
+.entry{
+	font-size: 30px;
+	padding: 20px;
+	padding-bottom: 0px;
+	text-align: left;
+}
+
+input{
+	text-align: left;
+}
+
+input[type=text]{
+	margin: 20px;
+	width: 90%;
+}
+
+.wrapper{
+	text-align: center;
+	display: block;
+	/*margin: 0 auto;*/
+}
+
+.info-button{
+	position: fixed;
+	bottom: 30px;
+	/*left: 100px;*/
+}
